@@ -1,3 +1,7 @@
+/*
+    필요한 정보 : points, status, name, money
+*/
+
 select m.points, um.status, s.name, m.money
 from user_mission um 
 	join missions m on um.mission_id = m.id
