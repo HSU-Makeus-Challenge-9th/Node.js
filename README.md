@@ -5,9 +5,9 @@
 **👴🏼Senior**
 
 
-| <img src="https://avatars.githubusercontent.com/u/158552165?v=4" width=100> | <img src="https://avatars.githubusercontent.com/u/187004014?v=4" width=100> | <img src="https://avatars.githubusercontent.com/u/185588402?v=4" width=100> |
-| :---: | :---: | :---: | 
-| [박세웅](https://github.com/hardwoong) | [채민수](https://github.com/miinsoo) | [전종현](https://github.com/J2H3233) | 
+| <img src="https://avatars.githubusercontent.com/u/187004014?v=4" width=100> | <img src="https://avatars.githubusercontent.com/u/185588402?v=4" width=100> |
+| :---: | :---: | 
+| [채민수](https://github.com/miinsoo) | [전종현](https://github.com/J2H3233) | 
 
 **👶🏼Junior**
 
