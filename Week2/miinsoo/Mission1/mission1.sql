@@ -3,7 +3,7 @@ SET @last_id = 123;
 SET @last_created_at = '2025-09-20 00:00:01';
 
 SELECT
-    *
+    * 
 FROM
     activated_mission
 WHERE
