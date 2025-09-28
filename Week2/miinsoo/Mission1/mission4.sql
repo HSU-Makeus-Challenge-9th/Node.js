@@ -1,6 +1,6 @@
 SELECT
     name,
-    point,
+    user_point,
     phone_number,
     email
 FROM
