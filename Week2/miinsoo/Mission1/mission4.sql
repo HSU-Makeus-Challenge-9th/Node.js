@@ -6,4 +6,4 @@ SELECT
 FROM
     user
 WHERE
-    id = 123; -- 실제 사용자 ID로 대체
+    id = 123; -- 실제 사용자 ID로 대체 
