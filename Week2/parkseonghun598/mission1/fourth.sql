@@ -23,7 +23,7 @@ select
 	u.nickname,
 	u.email
 	u.phone,
-	a.is_serciece_agreed,
+	a.is_service_agreed,
 	u.point
 from users u
 join agreements a on a.user_id=u.id
