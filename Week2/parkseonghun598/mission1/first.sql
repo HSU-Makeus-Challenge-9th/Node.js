@@ -19,13 +19,29 @@
 -- end_date의 활용여부는 프론트에서 처리
 
 -- 최종 쿼리
+-- 수정 이전 코드
+-- select 
+-- 	m.end_date,
+-- 	s.name as store_name,
+-- 	s.price,
+-- 	m.point
+-- from missions m
+-- join stores s on m.store_id = s.id
+-- join mission_mapping mm
+-- where m.user_id = ?;
+-- 수정 후 코드
+-- mission_mapping 테이블의 기본키가 없기 때문에, 이 테이블을 기준으로 매핑
 
 select 
 	m.end_date,
 	s.name as store_name,
 	s.price,
 	m.point
-from missions m
-join stores s on m.store_id = s.id
-join mission_mapping mm
-where m.user_id = ?;
+from mission_mapping mm
+join missions m 
+    on mm.mission_id = m.id
+join stores s 
+    on m.store_id = s.id
+where m.user_id = ?
+order by m.created_at desc
+limit 10 offset 0;
