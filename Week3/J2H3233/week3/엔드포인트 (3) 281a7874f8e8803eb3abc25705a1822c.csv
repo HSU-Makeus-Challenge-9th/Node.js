@@ -1,0 +1,8 @@
+﻿내용,유형,URL,설명
+홈 상단 바,GET,/api/v1/home/topbar,
+홈 미션,GET,/api/v1/home?region={region},
+"마이 페이지 ",GET,/api/v1/mypage,
+리뷰 작성,POST,/api/v1/store/{storeId}/reviews,
+미션 목록 조회,GET,/api/v1/missions?status={status},"status = completed,progress"
+미션 성공 누르기,PATCH,/api/v1/missions/{missionId}/success,
+회원 가입 하기,POST,/api/v1/signup,
