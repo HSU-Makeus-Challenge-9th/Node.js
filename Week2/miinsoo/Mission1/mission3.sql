@@ -1,6 +1,8 @@
 -- 진행가능한 미션 조회 쿼리
 SET @selected_town_name = '안암동';
 SET @user_id = 123; 
+SET @cursor_updated_at = 2024-09-28 10:00:00;
+SET @cursor_id = 200;         
 
 SELECT
     m.*,
@@ -17,7 +19,13 @@ JOIN
 LEFT JOIN
     activated_mission AS am ON m.id = am.mission_id AND am.user_id = @user_id
 WHERE
-    t.name = @selected_town_name AND am.state IS NULL
+    t.name = @selected_town_name 
+    AND am.state IS NULL
+    AND (
+        m.updated_at IS NULL OR
+        m.updated_at < @cursor_updated_at OR 
+        (m.updated_at = @cursor_updated_at AND m.id < @cursor_id)
+    )
 ORDER BY
     m.created_at DESC,
     id DESC
