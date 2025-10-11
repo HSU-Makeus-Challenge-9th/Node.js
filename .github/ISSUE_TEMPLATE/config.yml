@@ -13,3 +13,7 @@ issue_templates:
   - name: ✨ 기능 요청
     description: 새로운 기능을 제안하세요.
     file: feature_request.md
+
+  - name: ♻️ 리팩토링
+    description: 코드 개선 및 리팩토링을 제안하세요.
+    file: refactor.md
