@@ -1,0 +1,116 @@
+CREATE TABLE `user` (
+	`user_id`	bigint	NOT NULL,
+	`name`	varchar(20)	NULL,
+	`gender`	ENUM("남",녀)	NULL,
+	`birth`	verchar(50)	NULL,
+	`is_sign_up`	ENUM("예" , "아니오")	NULL,
+	`is_social_log_in`	ENUM("예" , "아니오")	NULL,
+	`is_manager`	ENUM("예" , "아니오")	NULL,
+	`status`	ENUM("예" , "아니오")	NULL,
+	`inactive_date`	datetime(6)	NULL,
+	`address`	verchar(100)	NULL,
+	`point`	bigint	NULL,
+	`create_at`	datetime(6)	NULL,
+	`updated_at`	datetime(6)	NULL,
+	`phone_num`	varchar(20)	NULL,
+	`email`	varchar(255)	NULL
+);
+
+CREATE TABLE `user mission` (
+	`user_mission_id`	bigint	NOT NULL,
+	`user_id`	bigint	NOT NULL,
+	`mission_category_id`	bigint	NOT NULL,
+	`store_id`	bigint	NOT NULL,
+	`status`	ENUM("수행중" , "수행 성공", "수행 실패")	NULL,
+	`accept _at`	datetime(6)	NULL,
+	`time_limit`	datetime(6)	NULL,
+	`done_at`	datetime(6)	NULL,
+	`create_at`	datetime(6)	NULL
+);
+
+CREATE TABLE `store` (
+	`store_id`	bigint	NOT NULL,
+	`name`	verchar(255)	NULL,
+	`adderss`	verchar(50)	NULL,
+	`review`	bigint	NULL,
+	`total_star`	bigint	NULL
+);
+
+CREATE TABLE `review img` (
+	`Key`	VARCHAR(255)	NOT NULL,
+	`review_id`	bigint	NOT NULL,
+	`user_id`	bigint	NOT NULL,
+	`store_id`	bigint	NOT NULL,
+	`img`	verchar(255)	NULL
+);
+
+CREATE TABLE `inquire img` (
+	`Key`	VARCHAR(255)	NOT NULL,
+	`inquire_id`	bigint	NOT NULL,
+	`user_id`	bigint	NOT NULL,
+	`img`	verchar(255)	NULL
+);
+
+CREATE TABLE `social log in` (
+	`social_log_in_id`	bigint	NOT NULL,
+	`user_id`	bigint	NOT NULL,
+	`Field`	VARCHAR(255)	NULL
+);
+
+CREATE TABLE `store img` (
+	`Key`	VARCHAR(255)	NOT NULL,
+	`store_id`	bigint	NOT NULL,
+	`img`	verchar(255)	NULL
+);
+
+CREATE TABLE `agreement` (
+	`agreement_id`	bigint	NOT NULL,
+	`user_id`	bigint	NOT NULL,
+	`is_forteen_over`	ENUM("예" , "아니오")	NULL,
+	`is_marketing_agree`	ENUM("예" , "아니오")	NULL,
+	`is_use_service_agree`	ENUM("예" , "아니오")	NULL,
+	`is_gps_agree`	ENUM("예" , "아니오")	NULL,
+	`is_private_infor_agree`	ENUM("예" , "아니오")	NULL,
+	`create_at`	datetime(6)	NULL,
+	`updated_at`	datetime(6)	NULL
+);
+
+CREATE TABLE `inquire` (
+	`inquire_id`	bigint	NOT NULL,
+	`user_id`	bigint	NOT NULL,
+	`title`	verchar(50)	NULL,
+	`content`	text	NULL,
+	`create_at`	datetime(6)	NULL,
+	`updated_at`	datetime(6)	NULL
+);
+
+CREATE TABLE `food` (
+	`food_id`	bigint	NOT NULL,
+	`user_id`	bigint	NOT NULL,
+	`is_prefer`	ENUM("예" , "아니오")	NULL,
+	`name`	verchar(50)	NULL
+);
+
+CREATE TABLE `review` (
+	`review_id`	bigint	NOT NULL,
+	`user_id`	bigint	NOT NULL,
+	`store_id`	bigint	NOT NULL,
+	`title`	verchar(50)	NULL,
+	`content`	text	NULL,
+	`star`	bigint	NULL,
+	`create_at`	datetime(6)	NULL,
+	`updated_at`	datetime(6)	NULL
+);
+
+CREATE TABLE `mission` (
+	`mission_category_id`	bigint	NOT NULL,
+	`store_id`	bigint	NOT NULL,
+	`rigion`	verchar(50)	NULL,
+	`mission_content`	text	NULL,
+	`give_point`	bigint	NULL,
+	`price`	bigint	NULL,
+	`create_at`	datetime(6)	NULL
+);
+
+
+
