@@ -1,4 +1,4 @@
-import { prisma } from "../config/db.config.js";
+import { prisma }  from "../config/db.config.js";
 import { CustomError } from '../error/customError.js';
 
 export const getMissionById = async (missionId) => {
@@ -23,7 +23,7 @@ export const insertMission = async (data) => {
                 point: data.point
             }
         });
-        return result.id;
+        return result;
     } catch (error) {
         console.error(error.stack);
         throw new CustomError(500,'DB_OPERATION_FAILED','미션을 생성하는 중 오류가 발생하였습니다.');
@@ -40,7 +40,7 @@ export const insertUserMission = async (missionId, data, status, verificationCod
                 verification_code: verificationCode
             }
         });
-        return result.id;
+        return result;
     } catch (error) {
         console.error(error.stack);
         throw new CustomError(500,'DB_OPERATION_FAILED','사용자 미션 추가 중 오류가 발생하였습니다.');

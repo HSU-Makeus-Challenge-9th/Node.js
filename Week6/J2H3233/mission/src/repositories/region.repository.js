@@ -1,4 +1,4 @@
-import { prisma } from "../config/db.config.js";
+import { prisma }  from "../config/db.config.js";
 import { CustomError, ErrorCodes } from '../error/customError.js';
 
 export const findByRegionCode = async (regionCode) => {

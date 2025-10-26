@@ -1,4 +1,4 @@
-import { prisma } from "../config/db.config.js";
+import { prisma }  from "../config/db.config.js";
 import { CustomError, ErrorCodes } from '../error/customError.js';
 
 export const insertReview = async (data) => {
@@ -11,7 +11,7 @@ export const insertReview = async (data) => {
                 content: data.content
             }
         });
-        return review.id;
+        return review;
     } catch (error) {
         console.error(error.stack);
         throw new CustomError(500,'DB_OPERATION_FAILED','리뷰 생성 중 오류가 발생하였습니다.');

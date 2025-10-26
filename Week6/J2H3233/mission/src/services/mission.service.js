@@ -1,22 +1,19 @@
-import { getStoreById } from "../repositories/store.repository.js";
+import { existStoreById } from "../repositories/store.repository.js";
 import { updateUserMissionStatus, getUserMissionsByUserId, getMissionsByStoreId, existUserMission, insertMission, getMissionById, insertUserMission, getUserMissionById } from "../repositories/mission.repository.js";
 import { responseGetMissionListDto, responseCompleteUserMissionDto, responseCreateMissionDto, responseAddMissionToUserDto, responseGetUserMissionListDto } from "../dtos/mission.dto.js";
 import { CustomError, ErrorCodes } from '../error/customError.js';
 
 
 export const createMission = async (data) => {
-    const store = await getStoreById(data.storeId);
+    const store = await existStoreById(data.storeId);
     if(!store) {
         throw new CustomError(404, ErrorCodes.STORE_NOT_FOUND, '존재하지 않는 가게입니다.');
     }
-    const missionId = await insertMission(data);
-    if(!missionId) {
+    const mission = await insertMission(data);
+    if(!mission) {
         throw new CustomError(404, ErrorCodes.MISSION_CREATE_FAILED, '미션 생성에 실패했습니다.');
     }
-    const mission = await getMissionById(missionId);
-    if(!mission) {
-        throw new CustomError(404, ErrorCodes.MISSION_NOT_FOUND, '존재하지 않는 미션입니다.');
-    }
+
     return responseCreateMissionDto(mission);
 }
 
@@ -39,14 +36,11 @@ export const addMissionToUser = async (data) => {
         return randomNumber.toString();
     }
 
-    const newUserMissionId = await insertUserMission(data.missionId, data, "in_progress", generateVerificationCode());
-    if (!newUserMissionId) {
+    const newUserMission = await insertUserMission(data.missionId, data, "in_progress", generateVerificationCode());
+    if (!newUserMission) {
         throw new CustomError(500, ErrorCodes.USER_MISSION_CREATE_FAILED, '미션을 사용자에게 추가하는 데 실패했습니다.');
     }
-    const newUserMission = await getUserMissionById(newUserMissionId);
-    if (!newUserMission) {
-        throw new CustomError(404, ErrorCodes.USER_MISSION_NOT_FOUND, '사용자 미션이 존재하지 않습니다');
-    }
+
 
     return responseAddMissionToUserDto(newUserMission);
 };

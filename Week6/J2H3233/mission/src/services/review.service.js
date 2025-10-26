@@ -9,13 +9,9 @@ export const createReview = async (data) => {
     if(!store) {
         throw new CustomError(404, ErrorCodes.STORE_NOT_FOUND, '존재하지 않는 가게입니다.');
     }
-    const reviewId = await insertReview(data);
-    if(!reviewId) {
-        throw new CustomError(500, ErrorCodes.REVIEW_CREATE_FAILED, '리뷰 생성에 실패했습니다.');
-    }
-    const review = await getReviewsById(reviewId);
+    const review = await insertReview(data);
     if(!review) {
-        throw new CustomError(404, ErrorCodes.REVIEW_NOT_FOUND, '리뷰 조회에 실패했습니다.');
+        throw new CustomError(500, ErrorCodes.REVIEW_CREATE_FAILED, '리뷰 생성에 실패했습니다.');
     }
 
     return responseCreateReviewDto(review);
