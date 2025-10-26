@@ -1,6 +1,6 @@
 export const createStoreDto = (body, regionCode) => {
   return {
-    regionCode: regionCode,
+    regionCode: region_code,
     name: body.name,
     address: body.address,
     category: body.category,

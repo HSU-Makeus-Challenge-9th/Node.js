@@ -1,5 +1,5 @@
 import {pool} from '../config/db.config.js';
-import { CustomError, ErrorCodes } from '../error/customError.js';
+import { CustomError } from '../error/customError.js';
 
 export const getMissionById = async (missionId) => {
     try {

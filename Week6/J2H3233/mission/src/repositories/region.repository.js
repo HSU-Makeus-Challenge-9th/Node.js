@@ -1,20 +1,26 @@
-import { pool } from '../config/db.config.js';
-import { CustomError } from '../error/customError.js';
+import { prisma } from "../config/db.config.js";
+import { CustomError, ErrorCodes } from '../error/customError.js';
 
 export const findByRegionCode = async (regionCode) => {
     try {
-        const [rows] = await pool.execute('SELECT * FROM region WHERE region_code = ?', [regionCode]);
-        return rows[0];
+        const region = await prisma.region.findUnique({
+            where: { region_code: regionCode }
+        });
+        return region;
     } catch (error) {
-        throw new CustomError(500,'지역 코드 조회중 오류가 발생하였습니다.');
+        console.error(error.stack);
+        throw new CustomError(500,'DB_OPERATION_FAILED','지역 코드 조회중 오류가 발생하였습니다.');
     }
 };
 
 export const findById = async (id) => {
     try {
-        const [rows] = await pool.execute('SELECT * FROM regions WHERE id = ?', [id]);
-        return rows[0];
+        const region = await prisma.region.findUnique({
+            where: { id }
+        });
+        return region;
     } catch (error) {
-        throw new CustomError(500,'지역을 조회하는 중 오류가 발생하였습니다.');
+        console.error(error.stack);
+        throw new CustomError(500,'DB_OPERATION_FAILED','지역을 조회하는 중 오류가 발생하였습니다.');
     }
 };

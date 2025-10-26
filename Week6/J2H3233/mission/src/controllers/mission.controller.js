@@ -1,6 +1,5 @@
-import { createMission } from '../services/mission.service.js';
-import { addMissionToUser } from '../services/mission.service.js';
-import { createMissionDto, addMissionToUserDto } from '../dtos/mission.dto.js';
+import { completeUserMission,getMissionList,createMission, addMissionToUser, getUserMissionList} from '../services/mission.service.js';
+import { getMissionListDto,createMissionDto, addMissionToUserDto } from '../dtos/mission.dto.js';
 
 export const handlerCreateMission = async (req, res, next) => {
   const { storeId } = req.params;
@@ -32,4 +31,46 @@ export const handlerAddMissionToUser = async (req, res, next) => {
   } catch (error) {
     next(error);
   }
+};
+
+export const handlerGetMissionList = async (req, res, next) => {
+  const { storeId } = req.params;
+  try {
+    const missions = await getMissionList(getMissionListDto(storeId));
+    res.jsonSuccess(
+      missions,
+      '가게의 미션 목록 조회에 성공했습니다',
+      200
+    );
+  } catch (error) {
+    next(error);
+  }
+};
+
+export const handlerGetUserMissionList = async (req, res, next) => {
+    const { userId } = req.body;
+    try {
+        const userMissions = await getUserMissionList(parseInt(userId));
+        res.jsonSuccess(
+            userMissions,
+            '사용자 미션 목록 조회에 성공했습니다',
+            200
+        );
+    } catch (error) {
+        next(error);
+    }
+};
+
+export const handlerCompleteUserMission = async (req, res, next) => {
+    const { userMissionId } = req.params;
+    const result = await completeUserMission(parseInt(userMissionId));
+    try {
+        res.jsonSuccess(
+            result,
+            '사용자 미션 진행 완료에 성공했습니다',
+            200
+        );
+    } catch (error) {
+        next(error);
+    }
 };

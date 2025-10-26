@@ -1,7 +1,7 @@
 import { getStoreById } from "../repositories/store.repository.js";
 import { existUserMission, insertMission, getMissionById, insertUserMission, getUserMissionById } from "../repositories/mission.repository.js";
 import { responseCreateMissionDto, responseAddMissionToUserDto } from "../dtos/mission.dto.js";
-import { CustomError, ErrorCodes } from '../error/customError.js';
+import { CustomError } from '../error/customError.js';
 
 
 export const createMission = async (data) => {

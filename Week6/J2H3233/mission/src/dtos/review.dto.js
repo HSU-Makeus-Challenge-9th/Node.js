@@ -10,9 +10,24 @@ export const createReviewDto = (id, body) => {
 export const responseCreateReviewDto = (review) => {
     return {
         id: parseInt(review.id),
-        storeId: parseInt(review.storeId),
-        userId: parseInt(review.userId),
+        storeId: parseInt(review.store_id),
+        userId: parseInt(review.user_id),
         score: parseFloat(review.score),
         content: review.content,
     };
 };
+
+export const getReviewDto = (userId) => {
+    return parseInt(userId);
+};
+
+export const responseGetReviewDto = (reviews) => {
+    return reviews.map((review) => ({
+        id: parseInt(review.id),
+        storeId: parseInt(review.store_id),
+        userId: parseInt(review.user_id),
+        score: parseFloat(review.score),
+        content: review.content,
+        createdAt: review.created_at,
+    }));
+}

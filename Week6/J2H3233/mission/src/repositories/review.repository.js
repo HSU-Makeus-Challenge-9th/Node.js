@@ -1,26 +1,45 @@
-import { pool } from '../config/db.config.js';
-import { CustomError } from '../error/customError.js';
+import { prisma } from "../config/db.config.js";
+import { CustomError, ErrorCodes } from '../error/customError.js';
 
 export const insertReview = async (data) => {
     try {
-        const [result] = await pool.execute(
-            'INSERT INTO review (store_id, user_id, score, content) VALUES (?, ?, ?, ?);',
-            [data.storeId, data.userId, data.score, data.content]
-        );
-        return result.insertId;
+        const review = await prisma.review.create({
+            data: {
+                store_id: data.storeId,
+                user_id: data.userId,
+                score: data.score,
+                content: data.content
+            }
+        });
+        return review.id;
     } catch (error) {
-        throw new CustomError(`리뷰 생성에 실패했습니다: ${error.message}`);
+        console.error(error.stack);
+        throw new CustomError(500,'DB_OPERATION_FAILED','리뷰 생성 중 오류가 발생하였습니다.');
     }
 };
 
+
 export const getReviewsById = async (reviewId) => {
     try {
-        const [result] = await pool.execute(
-            'SELECT * FROM review WHERE id = ?;',
-            [reviewId]
-        );
-        return result[0];
+        const review = await prisma.review.findUnique({
+            where: { id: reviewId },
+        });
+        return review;
     } catch (error) {
-        throw new CustomError(`리뷰 조회에 실패했습니다: ${error.message}`);
+        console.error(error.stack);
+        throw new CustomError(500,'DB_OPERATION_FAILED','리뷰 조회 중 오류가 발생하였습니다.');
+    }
+};
+
+
+export const getReviewsByUserId = async (userId) => {
+    try {
+        const reviews = await prisma.review.findMany({
+            where: { user_id: userId },
+        });
+        return reviews;
+    } catch (error) {
+        console.error(error.stack);
+        throw new CustomError(500,'DB_OPERATION_FAILED','리뷰 목록 조회 중 오류가 발생하였습니다.');
     }
 };

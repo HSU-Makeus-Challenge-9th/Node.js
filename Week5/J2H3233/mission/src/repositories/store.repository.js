@@ -1,5 +1,5 @@
 import { pool } from '../config/db.config.js';
-import { CustomError, ErrorCodes } from '../error/customError.js';
+import { CustomError } from '../error/customError.js';
 
 export const insertStore = async (data, region, category) => {
     try {
@@ -10,7 +10,7 @@ export const insertStore = async (data, region, category) => {
         );
         return results.insertId;
     } catch (error) {
-        throw new CustomError(500,'DB_OPERATION_FAILED',''가게 생성에 실패했습니다.');
+        throw new CustomError(500,'가게 생성에 실패했습니다.');
     }
 };
 
@@ -22,7 +22,7 @@ export const getStoreById = async (storeId) => {
         );
         return results[0];
     } catch (error) {
-        throw new CustomError(500,'DB_OPERATION_FAILED',''가게 조회에 실패했습니다.');
+        throw new CustomError(500,'가게 조회에 실패했습니다.');
     }
 };
 

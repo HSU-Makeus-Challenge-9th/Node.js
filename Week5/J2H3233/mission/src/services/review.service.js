@@ -1,7 +1,7 @@
 import { getStoreById } from "../repositories/store.repository.js";
 import { insertReview, getReviewsById } from "../repositories/review.repository.js";
 import { responseCreateReviewDto } from "../dtos/review.dto.js";
-import { CustomError, ErrorCodes } from '../error/customError.js';
+import { CustomError } from '../error/customError.js';
 
 export const createReview = async (data) => {
 

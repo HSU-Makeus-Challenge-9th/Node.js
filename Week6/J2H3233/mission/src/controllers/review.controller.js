@@ -1,7 +1,5 @@
-import { createReview } from "../services/review.service.js";
-import { createReviewDto } from "../dtos/review.dto.js";
-import { responseCreateReviewDto } from "../dtos/review.dto.js";
-
+import { createReview, getReviewList } from "../services/review.service.js";
+import { createReviewDto, getReviewDto } from "../dtos/review.dto.js";
 
 export const handlerCreateReview = async (req, res, next) => {
     const { storeId } = req.params;
@@ -19,3 +17,17 @@ export const handlerCreateReview = async (req, res, next) => {
         next(error);
     }
 }
+
+export const handlerGetReviewList = async (req, res, next) => {
+    const userId  = req.body.userId;
+    try {
+        const reviews = await getReviewList(getReviewDto(userId));
+        res.jsonSuccess(
+            reviews, 
+            '리뷰 목록 조회에 성공했습니다', 
+            200
+        );
+    } catch (error) {
+        next(error);
+    }
+};
