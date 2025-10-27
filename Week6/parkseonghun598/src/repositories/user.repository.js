@@ -1,0 +1,110 @@
+import { prisma } from "../db.config.js";
+
+export const addUser = async (data) => {
+  try {
+    // 이메일 중복 확인
+    const existingUser = await prisma.user.findUnique({
+      where: { email: data.email }
+    });
+
+    if (existingUser) {
+      return null;
+    }
+
+    // 사용자 생성
+    const user = await prisma.user.create({
+      data: {
+        name: data.name,
+        gender: data.gender,
+        birth: data.birth,
+        address: data.address,
+        password: data.password,
+        email: data.email,
+        phoneNumber: data.phoneNumber,
+      }
+    });
+
+    return user.id;
+  } catch (err) {
+    throw new Error(
+      `오류가 발생했어요. 요청 파라미터를 확인해주세요. (${err})`
+    );
+  }
+};
+//약관 동의 저장
+export const setAgreements = async (userId) => {
+  try {
+    await prisma.agreement.create({
+      data: {
+        userId: userId,
+        isServiceAgreed: true,
+        isPersonalAgreed: true,
+        isLocationAgreed: true,
+        isAlramAgreed: true,
+        ifFourteenAgreed: true,
+      }
+    });
+  } catch (err) {
+    throw new Error(`DB 오류(setAgreements): ${err}`);
+  }
+};
+//선호 카테고리 매핑
+export const setPreferences = async (userId, preferences) => {
+  try {
+    //Bulk Insert 방식으로 다수 카테고리 등록
+    const data = preferences.map((categoryId) => ({
+      userId: userId,
+      categoryId: categoryId,
+    }));
+    
+    await prisma.userPreference.createMany({
+      data: data,
+    });
+  } catch (err) {
+    throw new Error(`DB 오류(setPreferences): ${err}`);
+  }
+};
+// 사용자 정보 얻기
+export const getUser = async (userId) => {
+  try {
+    const user = await prisma.user.findUnique({
+      where: { id: userId }
+    });
+
+    console.log(user);
+
+    if (!user) {
+      return null;
+    }
+
+    return [user]; // 기존 코드 호환성을 위해 배열로 반환
+  } catch (err) {
+    throw new Error(
+      `오류가 발생했어요. 요청 파라미터를 확인해주세요. (${err})`
+    );
+  }
+};
+
+// 사용자 선호 카테고리 조회
+export const getUserPreferencesByUserId = async (userId) => {
+  try {
+    const preferences = await prisma.userPreference.findMany({
+      where: { userId: userId },
+      include: {
+        category: true,
+      },
+      orderBy: {
+        categoryId: 'asc',
+      }
+    });
+
+    // 기존 응답 형식에 맞게 변환
+    return preferences.map(p => ({
+      mapping_id: p.id,
+      category_id: p.categoryId,
+      category_name: p.category.name,
+    }));
+  } catch (err) {
+    throw new Error(`DB 오류(getUserPreferencesByUserId): ${err}`);
+  }
+};
