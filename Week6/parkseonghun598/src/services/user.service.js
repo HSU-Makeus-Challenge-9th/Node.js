@@ -1,4 +1,5 @@
 import { responseFromUser } from "../dtos/user.dto.js";
+import bcrypt from 'bcrypt'
 import {
   addUser,
   getUser,
@@ -8,13 +9,15 @@ import {
 } from "../repositories/user.repository.js";
 
 export const userSignUp = async (data) => {
+  //비밀번호 해싱
+  const hashedPassword = await bcrypt.hash(data.password, 10);
   //사용자 추가
   const joinUserId = await addUser({
     name: data.name,
     gender: data.gender,
     birth: data.birth,
     address: data.address,
-    password : data.password,
+    password : hashedPassword,
     email: data.email,
     phoneNumber: data.phoneNumber,
   });
