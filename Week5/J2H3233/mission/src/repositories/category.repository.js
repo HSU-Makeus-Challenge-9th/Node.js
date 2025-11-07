@@ -9,7 +9,7 @@ export const findByCategory = async (category) => {
     );
     return rows[0];
     } catch (error) {
-        throw new CustomError('카테고리를 조회하는 중 오류가 발생하였습니다.');
+        throw new CustomError(500,'카테고리를 조회하는 중 오류가 발생하였습니다.');
     }
 };
 
