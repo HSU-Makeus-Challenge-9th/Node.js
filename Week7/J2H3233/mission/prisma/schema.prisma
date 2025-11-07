@@ -1,0 +1,363 @@
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+model Region {
+  id          Int   @id @default(autoincrement())
+  created_at  DateTime @default(now()) @map("created_at")
+  updated_at  DateTime @default(now()) @updatedAt @map("updated_at")
+  sido        String   @db.VarChar(255)
+  sigungu     String   @db.VarChar(255)
+  eupmyeon    String   @db.VarChar(255)
+  region_code String   @db.VarChar(255)
+
+  users         User[]
+  stores        Store[]
+  regionRewards RegionReward[]
+
+  @@map("region")
+}
+
+model Category {
+  id         Int   @id @default(autoincrement())
+  created_at DateTime @default(now()) @map("created_at")
+  updated_at DateTime @default(now()) @updatedAt @map("updated_at")
+  category   String   @db.VarChar(255)
+
+  stores Store[]
+  users  CategoryUser[]
+
+  @@map("category")
+}
+
+model User {
+  id                        Int   @id @default(autoincrement())
+  region_id                 Int
+  email                     String   @unique @db.VarChar(255)
+  name                      String   @db.VarChar(255)
+  gender                    Gender
+  birth_date                DateTime @db.Date
+  address_detail            String   @db.VarChar(255)
+  phone_num                 String   @db.VarChar(255)
+  is_phone_verified         Boolean  @default(false)
+  profile_image_url         String?  @db.VarChar(255)
+  is_under_14               Boolean  @default(false)
+  is_location_agreed        Boolean  @default(false)
+  is_event_subscribed       Boolean  @default(false) @map("is_event_subscribed")
+  is_review_reply_notified  Boolean  @default(true)
+  is_inquiry_reply_notified Boolean  @default(true)
+  is_withdrawn              Boolean  @default(false)
+  created_at                DateTime @default(now())
+  updated_at                DateTime @default(now()) @updatedAt
+
+  region         Region @relation(fields: [region_id], references: [id])
+  social_logins  SocialLogin[]
+  user_consents  UserConsents[]
+  category_users CategoryUser[]
+  user_missions  UserMission[]
+  point_records  PointRecord[]
+  reviews        Review[]
+  inquiries      Inquiry[]
+  notifications  Notification[]
+
+  @@map("user")
+}
+
+model SocialLogin {
+  id         Int   @id @default(autoincrement())
+  user_id    Int
+  provider   String   @db.VarChar(255)
+  created_at DateTime @default(now())
+  updated_at DateTime @default(now()) @updatedAt
+
+  user User @relation(fields: [user_id], references: [id])
+
+  @@map("social_login")
+}
+
+model UserConsents {
+  id         Int      @id @default(autoincrement())
+  user_id    Int
+  type       ConsentType
+  created_at DateTime    @default(now())
+  updated_at DateTime    @default(now()) @updatedAt
+
+  user User @relation(fields: [user_id], references: [id])
+
+  @@map("user_consents")
+}
+
+model CategoryUser {
+  id          Int   @id @default(autoincrement())
+  created_at  DateTime @default(now())
+  updated_at  DateTime @default(now()) @updatedAt @map("updated_at")
+  category_id Int
+  user_id     Int
+
+  category Category @relation(fields: [category_id], references: [id])
+  user     User     @relation(fields: [user_id], references: [id])
+
+  @@map("category_user")
+}
+
+model Store {
+	id Int @id @default(autoincrement())
+	category_id Int
+	region_id Int
+	created_at DateTime @default(now())
+	updated_at DateTime @default(now()) @updatedAt @map("updated_at")
+	store_name String @db.VarChar(255)
+	status StoreStatus 
+	address_detail String? @db.VarChar(255)
+	lat Float? @db.Double
+	lng Float? @db.Double
+
+	category Category @relation(fields: [category_id], references: [id])
+	region   Region @relation(fields: [region_id], references: [id])
+	images StoreImage[]
+	hours BusinessHour[]
+	missions Mission[]
+	reviews Review[]
+
+	@@map("store")
+}
+
+model StoreImage {
+  id         Int   @id @default(autoincrement())
+  store_id   Int
+  created_at DateTime @default(now())
+  updated_at DateTime @default(now()) @updatedAt @map("updated_at")
+  image_url  String?  @db.VarChar(255)
+
+  store Store @relation(fields: [store_id], references: [id])
+
+  @@map("store_image")
+}
+
+model BusinessHour {
+  id          Int    @id @default(autoincrement())
+  store_id    Int
+  created_at  DateTime  @default(now())
+  updated_at  DateTime  @default(now()) @updatedAt @map("updated_at")
+  day_of_week DayOfWeek
+  open_time   DateTime  @db.Time(0)
+  close_time  DateTime  @db.Time(0)
+
+  store Store @relation(fields: [store_id], references: [id])
+
+  @@map("business_hour")
+}
+
+model Mission {
+  id         Int   @id @default(autoincrement())
+  store_id   Int
+  created_at DateTime @default(now())
+  updated_at DateTime @default(now()) @updatedAt @map("updated_at")
+  amount     Int
+  deadline   DateTime
+  point      Int
+
+  store         Store @relation(fields: [store_id], references: [id])
+  user_missions UserMission[]
+
+  @@map("mission")
+}
+
+model UserMission {
+  id                Int        @id @default(autoincrement())
+  user_id           Int?
+  mission_id        Int
+  created_at        DateTime      @default(now())
+  updated_at        DateTime      @default(now()) @updatedAt @map("updated_at")
+  verification_code String        
+  status            MissionStatus
+
+  user          User? @relation(fields: [user_id], references: [id])
+  mission       Mission @relation(fields: [mission_id], references: [id])
+  point_records PointRecord[]
+
+  @@map("user_mission")
+}
+
+model PointRecord {
+  id              Int   @id @default(autoincrement())
+  created_at      DateTime @default(now())
+  updated_at      DateTime @default(now()) @updatedAt @map("updated_at")
+  content         String   @db.VarChar(255)
+  point           Int
+  user_id         Int
+  user_mission_id Int
+
+  user         User        @relation(fields: [user_id], references: [id])
+  user_mission UserMission @relation(fields: [user_mission_id], references: [id])
+
+  @@map("point_record")
+}
+
+model Review {
+  id         Int   @id @default(autoincrement())
+  user_id    Int
+  store_id   Int
+  created_at DateTime @default(now())
+  updated_at DateTime @default(now()) @updatedAt @map("updated_at")
+  score      Float
+  content    String?  @db.Text
+
+  user   User   @relation(fields: [user_id], references: [id])
+  store  Store  @relation(fields: [store_id], references: [id])
+  images ReviewImage[]
+  reply  ReviewReply?
+
+  @@map("review")
+}
+
+model ReviewImage {
+  id         Int   @id @default(autoincrement())
+  review_id  Int
+  created_at DateTime @default(now())
+  updated_at DateTime @default(now()) @updatedAt @map("updated_at")
+  image_url  String?  @db.VarChar(255)
+
+  review Review @relation(fields: [review_id], references: [id])
+
+  @@map("review_image")
+}
+
+model ReviewReply {
+  id         Int   @id @default(autoincrement())
+  review_id  Int   @unique
+  created_at DateTime @default(now())
+  updated_at DateTime @default(now()) @updatedAt @map("updated_at")
+  content    String?  @db.Text
+
+  review Review @relation(fields: [review_id], references: [id])
+
+  @@map("review_reply")
+}
+
+model Inquiry {
+  id         Int        @id @default(autoincrement())
+  user_id    Int
+  created_at DateTime      @default(now())
+  updated_at DateTime      @default(now()) @updatedAt @map("updated_at")
+  title      String        @db.VarChar(255)
+  type       InquiryType
+  content    String        @db.Text
+  status     InquiryStatus
+
+  user   User @relation(fields: [user_id], references: [id])
+  reply  InquiryReply?
+  images InquiryImage[]
+
+  @@map("inquiry")
+}
+
+model InquiryReply {
+  id         Int   @id @default(autoincrement())
+  created_at DateTime @default(now())
+  updated_at DateTime @default(now()) @updatedAt @map("updated_at")
+  content    String?  @db.Text
+  inquiry_id Int   @unique
+
+  inquiry Inquiry @relation(fields: [inquiry_id], references: [id])
+
+  @@map("inquiry_reply")
+}
+
+model InquiryImage {
+  id         Int   @id @default(autoincrement())
+  inquiry_id Int
+  image_url  String?  @db.VarChar(255)
+  created_at DateTime @default(now())
+  updated_at DateTime @default(now()) @updatedAt
+
+  inquiry Inquiry @relation(fields: [inquiry_id], references: [id])
+
+  @@map("inquiry_image")
+}
+
+model Notification {
+  id         Int           @id @default(autoincrement())
+  user_id    Int
+  created_at DateTime         @default(now())
+  updated_at DateTime         @default(now()) @updatedAt
+  is_read    Boolean          @default(false)
+  type       NotificationType
+  title      String           @db.VarChar(255)
+  content    String           @db.Text
+
+  user User @relation(fields: [user_id], references: [id])
+
+  @@map("notification")
+}
+
+model RegionReward {
+  id         Int   @id @default(autoincrement())
+  created_at DateTime @default(now())
+  updated_at DateTime @default(now()) @updatedAt @map("updated_at")
+  status     Boolean  @default(true)
+  region_id  Int
+
+  region Region @relation(fields: [region_id], references: [id])
+
+  @@map("region_reward")
+}
+
+enum Gender {
+  male
+  female
+  other
+}
+
+enum ConsentType {
+  privacy
+  marketing
+  location
+}
+
+enum StoreStatus {
+  active
+  inactive
+  closed
+}
+
+enum DayOfWeek {
+  MON
+  TUE
+  WED
+  THU
+  FRI
+  SAT
+  SUN
+}
+
+enum MissionStatus {
+  pending
+  in_progress
+  success
+  fail
+}
+
+enum InquiryType {
+  general
+  payment
+  mission
+  bug
+}
+
+enum InquiryStatus {
+  waiting
+  answered
+  closed
+}
+
+enum NotificationType {
+  system
+  reply
+  marketing
+}
