@@ -1,0 +1,309 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+// ------------------------------------------------------------------------------
+
+// ------------------------------------------------------------------------------
+// --- 1. 회원 핵심 정보 (User) ---
+// 서비스의 가장 기본이 되는 '회원'과 '약관' 관련 테이블
+// ------------------------------------------------------------------------------
+
+enum Gender {
+  MALE   @map("male")
+  FEMALE @map("female")
+  NONE   @map("none")
+}
+
+enum Provider {
+  KAKAO  @map("kakao")
+  GOOGLE @map("google")
+  NAVER  @map("naver")
+}
+
+enum Role {
+  USER  @map("user")
+  OWNER @map("owner")
+}
+
+enum Status {
+  ACTIVE   @map("active")
+  INACTIVE @map("inactive")
+  DELETED  @map("deleted")
+}
+
+model User {
+  id              BigInt        @id @default(autoincrement())
+  name            String        @db.VarChar(30)
+  gender          Gender        @default(NONE)
+  birth           DateTime      @db.Date
+  address         String        @db.VarChar(255)
+  detailAddress   String?       @map("detail_address") @db.VarChar(255)
+  nickname        String?       @db.VarChar(255)
+  email           String        @unique(map: "email") @db.VarChar(255)
+  phone           String        @unique @db.VarChar(15)
+  isPhoneVerified Boolean       @default(false) @map("is_phone_verified")
+  points          BigInt        @default(0)
+  provider        Provider
+  providerId      String        @map("provider_id") @db.VarChar(255)
+  role            Role          @default(USER)
+  createdAt       DateTime      @default(now()) @map("created_at")
+  updatedAt       DateTime      @updatedAt @map("updated_at")
+  status          Status        @default(ACTIVE)
+  inactiveDate    DateTime?     @map("inactive_date")
+  
+  Terms           Terms[]
+  UserPrefer      UserPrefer[]
+  UserRegion      UserRegion[]
+  Store           Store[]
+  UserMission     UserMission[]
+  StoreReview     StoreReview[]
+  Inquiry         Inquiry[]
+
+  @@unique([provider, providerId])
+  @@map("users")
+}
+
+model Terms {
+  id                       BigInt   @id @default(autoincrement())
+  isOverFourteen           Boolean  @default(true) @map("is_over_fourteen")
+  agreedToTermsOfService   Boolean  @default(true) @map("agreed_to_terms_of_service")
+  agreedToPrivacyPolicy    Boolean  @default(true) @map("agreed_to_privacy_policy")
+  agreedToLocationServices Boolean  @default(false) @map("agreed_to_location_services")
+  agreedToMarketingEmails  Boolean  @default(false) @map("agreed_to_marketing_emails")
+  createdAt                DateTime @default(now()) @map("created_at")
+  updatedAt                DateTime @updatedAt @map("updated_at")
+
+  // FK: 사용자 (1:1)
+  userId BigInt @map("user_id")
+  user   User   @relation(fields: [userId], references: [id])
+
+  @@map("terms")
+}
+
+// ------------------------------------------------------------------------------
+// --- 2. 회원 프로필 및 설정 ---
+// 회원의 개인화 설정 및 관련 마스터 테이블
+// ------------------------------------------------------------------------------
+
+model PreferCategory {
+  id         BigInt       @id @default(autoincrement())
+  name       String       @unique @db.VarChar(50)
+  
+  UserPrefer UserPrefer[]
+
+  @@map("prefer_categories")
+}
+
+model Region {
+  id         BigInt       @id @default(autoincrement())
+  name       String       @unique @db.VarChar(50)
+  
+  UserRegion UserRegion[]
+  Mission    Mission[]
+
+  @@map("regions")
+}
+
+model UserPrefer {
+  // FK: 사용자
+  userId           BigInt         @map("user_id")
+  user             User           @relation(fields: [userId], references: [id])
+  // FK: 선호 카테고리
+  preferCategoryId BigInt         @map("category_id")
+  preferCategory   PreferCategory @relation(fields: [preferCategoryId], references: [id])
+
+  @@id([userId, preferCategoryId]) // 복합 기본 키
+  @@map("user_prefer")
+}
+
+model UserRegion {
+  // FK: 사용자
+  userId   BigInt @map("user_id")
+  user     User   @relation(fields: [userId], references: [id])
+  // FK: 지역
+  regionId BigInt @map("region_id")
+  region   Region @relation(fields: [regionId], references: [id])
+
+  successCount BigInt  @default(0) @map("success_count")
+  hasBonus     Boolean @default(false) @map("has_bonus")
+
+  @@id([userId, regionId]) // 복합 기본 키
+  @@map("user_region")
+}
+
+// ------------------------------------------------------------------------------
+// --- 3. 가게 및 미션 ---
+// '사장님' 회원이 관리하는 '가게'와 '미션' 관련 테이블
+// ------------------------------------------------------------------------------
+
+model Store {
+  id        BigInt   @id @default(autoincrement())
+  name      String   @db.VarChar(255)
+  address   String   @db.VarChar(255)
+  stype     String   @db.VarChar(255)
+  total     Decimal  @default(0) @db.Decimal(65, 30)
+  count     BigInt   @default(0)
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  // FK: 사장님
+  ownerId     BigInt        @map("owner_id")
+  owner       User          @relation(fields: [ownerId], references: [id])
+  
+  StoreImage  StoreImage[]
+  Mission     Mission[]
+  StoreReview StoreReview[]
+
+  @@map("stores")
+}
+
+model StoreImage {
+  id  BigInt  @id @default(autoincrement())
+  img String? @db.VarChar(255)
+
+  // FK: 매장
+  storeId BigInt @map("store_id")
+  store   Store  @relation(fields: [storeId], references: [id])
+
+  @@map("store_images")
+}
+
+model Mission {
+  id        BigInt   @id @default(autoincrement())
+  startDate DateTime @default(now()) @map("start_date")
+  endDate   DateTime @map("end_date")
+  money     BigInt   @default(0)
+  points    BigInt   @default(0)
+
+  // FK: 매장
+  storeId     BigInt        @map("store_id")
+  store       Store         @relation(fields: [storeId], references: [id])
+  // FK: 지역
+  regionId    BigInt        @map("region_id")
+  region      Region        @relation(fields: [regionId], references: [id])
+  
+  UserMission UserMission[]
+
+  @@map("missions")
+}
+
+// ------------------------------------------------------------------------------
+// --- 4. 회원 활동 및 상호작용 ---
+// '일반 회원'이 '가게/미션'과 상호작용하며 생성하는 데이터w
+// ------------------------------------------------------------------------------
+
+enum UserMissionStatus {
+  CHALLENGING @map("challenging")
+  COMPLETED   @map("completed")
+  CANCELED    @map("canceled")
+}
+
+model UserMission {
+  // FK: 사용자
+  userId    BigInt  @map("user_id")
+  user      User    @relation(fields: [userId], references: [id])
+  // FK: 미션
+  missionId BigInt  @map("mission_id")
+  mission   Mission @relation(fields: [missionId], references: [id])
+
+  status      UserMissionStatus @default(CHALLENGING)
+  acceptedAt  DateTime          @default(now()) @map("accepted_at")
+  completedAt DateTime?         @map("completed_at")
+
+  @@id([userId, missionId])
+  @@map("user_mission")
+}
+
+model StoreReview {
+  id        BigInt   @id @default(autoincrement())
+  content   String?  @db.Text
+  score     Decimal? @db.Decimal(65, 30)
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  // FK: 작성자
+  writerId     BigInt         @map("writer_id")
+  writer       User           @relation(fields: [writerId], references: [id])
+  // FK: 매장
+  storeId      BigInt         @map("store_id")
+  store        Store          @relation(fields: [storeId], references: [id])
+  
+  ReviewImage  ReviewImage[]
+  ReviewAnswer ReviewAnswer[]
+
+  @@map("store_reviews")
+}
+
+model ReviewImage {
+  id  BigInt @id @default(autoincrement())
+  img String @db.VarChar(255)
+
+  // FK: 리뷰
+  reviewId BigInt      @map("review_id")
+  review   StoreReview @relation(fields: [reviewId], references: [id])
+
+  @@map("review_images")
+}
+
+model ReviewAnswer {
+  // FK이자 PK
+  reviewId BigInt      @id @map("review_id") // @id로 변경
+  review   StoreReview @relation(fields: [reviewId], references: [id])
+
+  content   String   @db.Text
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  @@map("review_answer")
+}
+
+// ------------------------------------------------------------------------------
+// --- 5. 회원 지원 (User Support) ---
+// '1:1 문의' 등 회원 지원 기능 관련 테이블입니다.
+// ------------------------------------------------------------------------------
+
+enum InquiryType {
+  ACCOUNT       @map("ACCOUNT")
+  SERVICE_ERROR @map("SERVICE_ERROR")
+  PROPOSAL      @map("PROPOSAL")
+}
+
+enum InquiryStatus {
+  PENDING  @map("PENDING")
+  ANSWERED @map("ANSWERED")
+}
+
+model Inquiry {
+  id        BigInt        @id @default(autoincrement())
+  title     String        @db.VarChar(255)
+  content   String        @db.Text
+  itype     InquiryType
+  status    InquiryStatus @default(PENDING)
+  createdAt DateTime      @default(now()) @map("created_at")
+  updatedAt DateTime      @updatedAt @map("updated_at")
+
+  // FK: 작성자
+  userId       BigInt         @map("user_id")
+  user         User           @relation(fields: [userId], references: [id])
+  
+  InquiryImage InquiryImage[]
+
+  @@map("inquiries")
+}
+
+model InquiryImage {
+  id  BigInt @id @default(autoincrement())
+  img String @db.VarChar(255)
+
+  // FK: 문의
+  inquiryId BigInt  @map("inquiry_id")
+  inquiry   Inquiry @relation(fields: [inquiryId], references: [id])
+
+  @@map("inquiry_images")
+}
