@@ -13,9 +13,10 @@ export const handlerCreateStore = async (req, res, next) => {
     const store = await createStore(createStoreDto(data, regionCode));
 
     res.jsonSuccess(
-      store,
+      201,
+      SuccessCodes.Created,
       '가게를 성공적으로 추가하였습니다.',
-      201
+      store
   );
   } catch (error) {
     next(error);

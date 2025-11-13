@@ -1,10 +1,8 @@
 export const responseHandler = (req, res, next) => {
-    res.jsonSuccess = (data, message = "요청에 성공했습니다.", code = 200) => {
-        const httpStatus = res.statusCode || 200;
+    res.jsonSuccess = ( httpStatus = 200, code,message = "요청에 성공했습니다.", data) => {
 
         return res.status(httpStatus).json({
-            isSuccess: true,
-            code: code,
+            code: code || 'SUCCESS',
             message: message,
             result: data,
         });

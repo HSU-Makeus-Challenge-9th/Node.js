@@ -1,5 +1,7 @@
 import { completeUserMission,getMissionList,createMission, addMissionToUser, getUserMissionList} from '../services/mission.service.js';
 import { getMissionListDto,createMissionDto, addMissionToUserDto } from '../dtos/mission.dto.js';
+import { CustomError, ErrorCodes } from '../error/customError.js';
+import { SuccessCodes } from '../error/resoposeCodes.js';
 
 
 export const handlerCreateMission = async (req, res, next) => {
@@ -21,9 +23,10 @@ export const handlerCreateMission = async (req, res, next) => {
     }
     const mission = await createMission(createMissionDto(storeId, data));
     res.jsonSuccess(
-      mission,
+      201,
+      SuccessCodes.Created,
       '가게 미션을 성공적으로 추가하였습니다.',
-      201
+      mission,
     );
   } catch (error) {
     next(error);
@@ -45,9 +48,10 @@ export const handlerAddMissionToUser = async (req, res, next) => {
 
     const result = await addMissionToUser(addMissionToUserDto(missionId, data));
     res.jsonSuccess(
-      result,
-      '미션을 사용자에게 추가하였습니다.',
-      201
+      201,
+      SuccessCodes.Created,
+      '미션을 사용자에게 추가하였습니다.',  
+      result
     );
   } catch (error) {
     next(error);
@@ -68,9 +72,10 @@ export const handlerGetMissionList = async (req, res, next) => {
 
     const missions = await getMissionList(getMissionListDto(storeId));
     res.jsonSuccess(
+      200,
+      SuccessCodes.OK,
+      '미션 목록 조회에 성공했습니다.',
       missions,
-      '가게의 미션 목록 조회에 성공했습니다',
-      200
     );
   } catch (error) {
     next(error);
@@ -90,9 +95,10 @@ export const handlerGetUserMissionList = async (req, res, next) => {
 
         const userMissions = await getUserMissionList(parseInt(userId));
         res.jsonSuccess(
-            userMissions,
+            200,
+            SuccessCodes.OK,
             '사용자 미션 목록 조회에 성공했습니다',
-            200
+            userMissions,
         );
     } catch (error) {
         next(error);
@@ -112,9 +118,10 @@ export const handlerCompleteUserMission = async (req, res, next) => {
     try {
         const result = await completeUserMission(parseInt(userMissionId));
         res.jsonSuccess(
-            result,
+            200,
+            SuccessCodes.OK,
             '사용자 미션 진행 완료에 성공했습니다',
-            200
+            result,
         );
     } catch (error) {
         next(error);

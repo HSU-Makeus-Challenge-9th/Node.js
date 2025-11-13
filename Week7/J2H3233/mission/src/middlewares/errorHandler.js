@@ -5,7 +5,7 @@ export const errorHandler = (err, req, res, next) => {
 
     res.status(httpStatus).json({
         isSuccess: false,
-        code: httpStatus,
+        code: err.code || 'INTERNAL_SERVER_ERROR',
         message: err.message || '서버 오류',
     });
 };

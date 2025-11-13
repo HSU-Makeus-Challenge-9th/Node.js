@@ -11,7 +11,7 @@ export const insertStore = async (data, region, category) => {
                 category_id: category.id
             }
         });
-        return store;
+        return store.id;
     } catch (error) {
         console.error(error.stack);
         throw new CustomError(500,'DB_OPERATION_FAILED','가게 생성 중 오류가 발생하였습니다.');

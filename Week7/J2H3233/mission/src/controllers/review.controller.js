@@ -1,5 +1,7 @@
 import { createReview, getReviewList } from "../services/review.service.js";
 import { createReviewDto, getReviewDto } from "../dtos/review.dto.js";
+import { CustomError, ErrorCodes } from '../error/customError.js';
+import { SuccessCodes } from '../error/resoposeCodes.js';
 
 export const handlerCreateReview = async (req, res, next) => {
     const { storeId } = req.params;
@@ -21,6 +23,7 @@ export const handlerCreateReview = async (req, res, next) => {
             review, 
             '리뷰 작성에 성공했습니다',
             201,
+            SuccessCodes.Created
         )
     } catch (error) {
         next(error);
@@ -41,7 +44,8 @@ export const handlerGetReviewList = async (req, res, next) => {
         res.jsonSuccess(
             reviews, 
             '리뷰 목록 조회에 성공했습니다', 
-            200
+            200,
+            SuccessCodes.OK
         );
     } catch (error) {
         next(error);
