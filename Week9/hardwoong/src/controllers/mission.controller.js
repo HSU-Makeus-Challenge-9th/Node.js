@@ -5,6 +5,7 @@ import { ValidationError } from "../errors/custom-error.js";
 
 export const handleMissionAdd = async (req, res, next) => {
   /*
+    #swagger.tags = ['Missions']
     #swagger.summary = '미션 추가 API';
     #swagger.requestBody = {
       required: true,
@@ -83,6 +84,7 @@ export const handleMissionAdd = async (req, res, next) => {
 
 export const handleMissionChallenge = async (req, res, next) => {
   /*
+    #swagger.tags = ['Missions']
     #swagger.summary = '미션 도전 API';
     #swagger.parameters['missionId'] = {
       in: 'path',
@@ -183,6 +185,7 @@ export const handleMissionChallenge = async (req, res, next) => {
 
 export const handleMissionSuccessRequest = async (req, res, next) => {
   /*
+    #swagger.tags = ['Missions']
     #swagger.summary = '미션 성공 요청 API';
     #swagger.requestBody = {
       required: true,
@@ -295,6 +298,7 @@ export const handleMissionSuccessRequest = async (req, res, next) => {
 
 export const handleMissionSuccessConfirm = async (req, res, next) => {
   /*
+    #swagger.tags = ['Missions']
     #swagger.summary = '미션 성공 확정 API';
     #swagger.requestBody = {
       required: true,
@@ -377,6 +381,7 @@ export const handleMissionSuccessConfirm = async (req, res, next) => {
 
 export const handleGetMyOngoingMissions = async (req, res, next) => {
   /*
+    #swagger.tags = ['Missions']
     #swagger.summary = '진행 중인 미션 목록 조회 API';
     #swagger.parameters['userId'] = {
       in: 'path',
@@ -457,6 +462,7 @@ export const handleGetMyOngoingMissions = async (req, res, next) => {
 
 export const handleGetStoreMissions = async (req, res, next) => {
   /*
+    #swagger.tags = ['Missions']
     #swagger.summary = '가게 미션 목록 조회 API';
     #swagger.parameters['storeId'] = {
       in: 'path',

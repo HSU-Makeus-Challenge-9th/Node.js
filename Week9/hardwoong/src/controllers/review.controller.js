@@ -23,6 +23,7 @@ const upload = multer({
 
 export const handleReviewAdd = async (req, res, next) => {
   /*
+    #swagger.tags = ['Reviews']
     #swagger.summary = '리뷰 추가 API (multipart/form-data - 이미지 포함)';
     #swagger.requestBody = {
       required: true,
@@ -110,6 +111,7 @@ export const uploadMiddleware = upload.array('images', 5); // 최대 5개 파일
 
 export const handleGetMyReviews = async (req, res, next) => {
   /*
+    #swagger.tags = ['Reviews']
     #swagger.summary = '내 리뷰 목록 조회 API';
     #swagger.parameters['userId'] = {
       in: 'path',

@@ -5,6 +5,7 @@ import { ValidationError, InvalidEmailFormatError, PasswordTooShortError } from 
 
 export const handleUserSignup = async (req, res, next) => {
   /*
+    #swagger.tags = ['Users']
     #swagger.summary = '회원가입 API';
     #swagger.requestBody = {
       required: true,
@@ -119,6 +120,7 @@ export const handleUserSignup = async (req, res, next) => {
 
 export const handleUserUpdate = async (req, res, next) => {
   /*
+    #swagger.tags = ['Users']
     #swagger.summary = '사용자 정보 수정 API';
     #swagger.requestBody = {
       required: true,

@@ -5,6 +5,7 @@ import { ValidationError } from "../errors/custom-error.js";
 
 export const handleReviewAddJson = async (req, res, next) => {
   /*
+    #swagger.tags = ['Reviews']
     #swagger.summary = '리뷰 추가 API (application/json - 텍스트만)';
     #swagger.requestBody = {
       required: true,

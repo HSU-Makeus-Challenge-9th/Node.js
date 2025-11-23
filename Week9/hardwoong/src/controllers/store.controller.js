@@ -4,6 +4,7 @@ import { storeAdd } from "../services/store.service.js";
 
 export const handleStoreAdd = async (req, res, next) => {
   /*
+    #swagger.tags = ['Stores']
     #swagger.summary = '가게 추가 API';
     #swagger.requestBody = {
       required: true,
